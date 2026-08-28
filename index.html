@@ -173,7 +173,10 @@ opacity:0;pointer-events:none;transition:opacity .5s ease}
 .ledger{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:clamp(24px,3.4vw,40px);margin-top:40px}
 .dark .ledger{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.13)}
 .led-controls{display:grid;gap:26px;grid-template-columns:1fr}
-@media(min-width:820px){.led-controls{grid-template-columns:1fr auto;align-items:end;gap:40px}}
+@media(min-width:820px){.led-controls{grid-template-columns:1fr 1fr;align-items:end;gap:40px}}
+@media(min-width:1120px){.led-controls{grid-template-columns:1fr 1fr auto;gap:44px}}
+.ratehint{font-size:.76rem;color:var(--slate-400);margin-top:12px;max-width:40ch;line-height:1.5}
+.ratehint b{color:var(--copper-300);font-variant-numeric:tabular-nums}
 .amt{font-size:clamp(2.1rem,5vw,3.1rem);font-weight:900;letter-spacing:-.03em;color:var(--copper-400);
 font-variant-numeric:tabular-nums;line-height:1}
 .amt small{font-size:.9rem;font-weight:600;color:var(--slate-400);letter-spacing:0}
@@ -533,8 +536,14 @@ pointer-events:auto;transition:none!important}
           <div class="amt" id="amtOut" style="margin:12px 0 4px">$100<small> / month</small></div>
           <input type="range" id="amt" min="10" max="500" step="10" value="100" aria-describedby="amtOut">
         </div>
+        <div>
+          <label for="rate" style="font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-400)">Compare to savings at</label>
+          <div class="amt" id="rateOut" style="margin:12px 0 4px;font-size:clamp(1.7rem,3.6vw,2.3rem)">0.62%<small> APY</small></div>
+          <input type="range" id="rate" min="0" max="5" step="0.01" value="0.62" aria-describedby="rateOut rateNote">
+          <div id="rateNote" class="ratehint">National average today is <b>0.62%</b>. The best high-yield accounts pay about <b>4%</b> — drag it there and see for yourself.</div>
+        </div>
         <div class="toggles">
-          <button class="tg" id="tgHysa" aria-pressed="true">Compare to savings</button>
+          <button class="tg" id="tgHysa" aria-pressed="true">Show savings line</button>
           <button class="tg" id="tgExit" aria-pressed="false">What if I stop early?</button>
         </div>
       </div>
@@ -542,7 +551,7 @@ pointer-events:auto;transition:none!important}
       <div class="chartbox"><svg id="chart" viewBox="0 0 900 340" role="img" aria-labelledby="chartTitle"><title id="chartTitle">Value over sixty months</title></svg></div>
       <div class="legend">
         <span><i style="background:#E79145"></i>Your CoSpark position</span>
-        <span id="lgHysa"><i style="background:#60BBA6"></i>4.5% high-yield savings</span>
+        <span id="lgHysa"><i style="background:#60BBA6"></i><span id="lgHysaTxt">0.62% savings account</span></span>
         <span><i style="background:#697B8C"></i>What you contributed</span>
       </div>
 
@@ -555,8 +564,8 @@ pointer-events:auto;transition:none!important}
 
       <div class="stats" style="margin-top:1px">
         <div class="stat"><div class="k">Points earned</div><div class="v" id="stPoints">6,000</div><div class="n">your standing in the commonwealth</div></div>
-        <div class="stat"><div class="k">Effective annual return</div><div class="v" id="stIrr">17.2%</div><div class="n">time value of money included</div></div>
-        <div class="stat"><div class="k">Same money in savings</div><div class="v" id="stHysa">$724</div><div class="n">4.5% APY, 60 months</div></div>
+        <div class="stat"><div class="k">Effective annual return</div><div class="v" id="stIrr">≈17%</div><div class="n">time value of money included</div></div>
+        <div class="stat"><div class="k">Same money in savings</div><div class="v" id="stHysa">$95</div><div class="n" id="stHysaNote">0.62% APY, 60 months</div></div>
         <div class="stat hi"><div class="k">Difference</div><div class="v" id="stDiff">$1,422</div><div class="n">CoSpark above savings</div></div>
       </div>
 
@@ -567,7 +576,7 @@ pointer-events:auto;transition:none!important}
         <input type="range" id="exSlider" min="6" max="59" step="1" value="24" style="margin-top:16px" aria-label="Month you stop contributing">
       </div>
 
-      <p class="footnote">Boost Payment equals your contribution divided by 3.25. Effective annual return is the internal rate of return on the full 60-month cash flow, expressed as an annual equivalent, and holds at any contribution amount. Boost Payments and the 5% premium are taxable income and a 1099 is issued annually; the return of your own reserve is not taxable. Savings comparison assumes 4.5% APY compounded monthly on the same deposits. Figures illustrate program terms and are not a promise of future results.</p>
+      <p class="footnote">Boost Payment equals your contribution divided by 3.25. Effective annual return is the internal rate of return on the full 60-month cash flow expressed as an annual equivalent. It lands between 16.7% and 17.2% depending on the timing convention used for the final redemption, which is why we state it as approximately 17%, and it holds at any contribution amount. Boost Payments and the 5% premium are taxable income and a 1099 is issued annually; the return of your own reserve is not taxable. Savings comparison applies the rate you set, compounded monthly on the same deposits. It opens at 0.62%, the national average savings yield reported by Bankrate on August 28, 2026. Figures illustrate program terms and are not a promise of future results.</p>
     </div>
   </div>
 </section>
@@ -657,10 +666,11 @@ pointer-events:auto;transition:none!important}
         </div>
       </details>
       <details>
-        <summary>How is a 17% effective return possible when my bank offers 4.5%?</summary>
+        <summary>How is a return near 17% possible when my bank pays under 1%?</summary>
         <div class="ans">
-          <p>Two reasons, and both are arithmetic rather than alchemy. First, the Boost Payment arrives within days of each contribution instead of at the end, so the money is in your hands earning or spending for the whole period. Time value does a great deal of the work.</p>
-          <p>Second, a bank pays you a sliver of what it earns lending your deposits out. CoSpark returns a share of what member commitment makes possible. Same underlying idea, different split.</p>
+          <p>Two reasons, and both are arithmetic rather than alchemy. First, the Boost Payment arrives within days of each contribution instead of at the end, so that money is in your hands earning or spending for the whole stretch. Time value does a great deal of the work.</p>
+          <p>Second, a bank pays you a sliver of what it earns lending your deposits out. CoSpark returns a share of what member commitment makes possible. Same underlying idea, a different split.</p>
+          <p>The national average savings account pays about <b>0.62%</b> today, and that is where the calculator opens. Shop around and you can find high-yield accounts near <b>4%</b>. Drag the rate up to 4% and compare against that instead — the Member Reserve still comes out ahead, by less.</p>
         </div>
       </details>
       <details>
@@ -845,16 +855,19 @@ if(RM){
 }
 
 /* ══ LEDGER ══ */
-var DIV=3.25, N=60, PREM=0.05, HYSA_APY=0.045;
-var hm=Math.pow(1+HYSA_APY,1/12)-1;
-var MONTHLY_IRR=0.01332151;                       // solved from the 60-month cash flow
-var EFF_APY=Math.pow(1+MONTHLY_IRR,12)-1;         // ≈ 17.21%
+var DIV=3.25, N=60, PREM=0.05;
+var rate=$("#rate"), rateOut=$("#rateOut");
+function hmRate(){ return Math.pow(1+(+rate.value)/100,1/12)-1 }
+// IRR on the 60-month cash flow: 17.2% with redemption at month 60, 16.7% if the
+// redemption is treated as landing a month after the last contribution. Both are
+// defensible, so the page states the honest round number rather than false precision.
+var EFF_APY_LABEL="≈17%";
 var amt=$("#amt"), amtOut=$("#amtOut");
 var tgHysa=$("#tgHysa"), tgExit=$("#tgExit"), exNote=$("#exitNote"), exS=$("#exSlider");
 var showHysa=true, showExit=false;
 
 function series(c){
-  var cos=[0],hy=[0],con=[0],bal=0;
+  var cos=[0],hy=[0],con=[0],bal=0,hm=hmRate();
   for(var m=1;m<=N;m++){
     bal=(bal+c)*(1+hm);
     con.push(c*m);
@@ -899,14 +912,18 @@ function paintLedger(){
   var c=+amt.value;
   amtOut.innerHTML=fmt0(c)+'<small> / month</small>';
   var boost=c/DIV, tb=boost*N, contrib=c*N, redeem=contrib*(1+PREM), net=tb+contrib*PREM;
-  var bal=0; for(var m=0;m<N;m++) bal=(bal+c)*(1+hm);
+  var hm=hmRate(), bal=0; for(var m=0;m<N;m++) bal=(bal+c)*(1+hm);
   var hysaInt=bal-contrib;
   $("#stContrib").textContent=fmt0(contrib);
   $("#stBoost").textContent=fmt0(tb);
   $("#stRedeem").textContent=fmt0(redeem);
   $("#stNet").textContent=fmt0(net);
   $("#stPoints").textContent=fmtN(contrib);
-  $("#stIrr").textContent=(EFF_APY*100).toFixed(1)+"%";
+  var rv=(+rate.value).toFixed(2);
+  rateOut.innerHTML=rv+"%<small> APY</small>";
+  $("#lgHysaTxt").textContent=rv+"% savings account";
+  $("#stHysaNote").textContent=rv+"% APY, 60 months";
+  $("#stIrr").textContent=EFF_APY_LABEL;
   $("#stHysa").textContent=fmt0(hysaInt);
   $("#stDiff").textContent=fmt0(net-hysaInt);
   var k=+exS.value, exB=boost*k, exC=c*k, exP=exC-exB;
@@ -918,6 +935,7 @@ function paintLedger(){
   drawChart(c);
 }
 amt.addEventListener("input",paintLedger);
+rate.addEventListener("input",paintLedger);
 var rzT;window.addEventListener("resize",function(){clearTimeout(rzT);rzT=setTimeout(paintLedger,180)});
 exS.addEventListener("input",paintLedger);
 tgHysa.addEventListener("click",function(){
