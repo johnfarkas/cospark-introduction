@@ -174,7 +174,6 @@ opacity:0;pointer-events:none;transition:opacity .5s ease}
 .dark .ledger{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.13)}
 .led-controls{display:grid;gap:26px;grid-template-columns:1fr}
 @media(min-width:820px){.led-controls{grid-template-columns:1fr 1fr;align-items:end;gap:40px}}
-@media(min-width:1120px){.led-controls{grid-template-columns:1fr 1fr auto;gap:44px}}
 .ratehint{font-size:.76rem;color:var(--slate-400);margin-top:12px;max-width:40ch;line-height:1.5}
 .ratehint b{color:var(--copper-300);font-variant-numeric:tabular-nums}
 .amt{font-size:clamp(2.1rem,5vw,3.1rem);font-weight:900;letter-spacing:-.03em;color:var(--copper-400);
@@ -188,8 +187,42 @@ border:1px solid var(--line);background:var(--white);color:var(--body)}
 .dark .tg[aria-pressed="true"]{background:var(--copper-500);border-color:var(--copper-500);color:#fff}
 .chartbox{margin-top:34px;position:relative}
 .chartbox svg{width:100%;height:auto;overflow:visible}
-.legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;font-size:.78rem;font-weight:600;color:var(--slate-400)}
-.legend i{display:inline-block;width:13px;height:3px;border-radius:2px;margin-right:7px;vertical-align:middle}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+caption.sr-only{display:block;position:absolute;height:1px;width:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.legend{display:flex;gap:12px 24px;flex-wrap:wrap;margin-top:18px;font-size:.78rem;font-weight:600;color:var(--slate-300)}
+.legend i.ln{display:inline-block;width:18px;height:0;margin-right:8px;vertical-align:middle;border-radius:2px}
+.legend i.solid{height:3px}
+.legend i.dash{border-top:2px dashed #697B8C;background:none!important}
+
+/* ── conventional vs Member Reserve comparison ── */
+.cmp{width:100%;border-collapse:collapse;margin-top:36px;font-variant-numeric:tabular-nums}
+.cmp th,.cmp td{padding:15px 16px;text-align:right;vertical-align:baseline}
+.cmp thead th{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700;
+color:var(--slate-300);border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:12px}
+.cmp tbody th{text-align:left;font-weight:600;font-size:.9rem;color:var(--slate-300);width:38%}
+.cmp .sub{display:block;font-size:.7rem;font-weight:500;letter-spacing:0;text-transform:none;
+color:var(--slate-400);margin-top:4px}
+.cmp tbody td{font-size:clamp(1.05rem,2.1vw,1.35rem);font-weight:700;color:var(--slate-200)}
+.cmp tbody tr+tr th,.cmp tbody tr+tr td{border-top:1px solid rgba(255,255,255,.09)}
+/* the Member Reserve column is the one being argued for — tint the whole stripe */
+.cmp .c-mr{background:rgba(212,121,47,.11)}
+.cmp thead .c-mr{color:var(--copper-300)}
+.cmp tbody .c-mr{color:var(--copper-200)}
+.cmp .zero{color:var(--slate-400);font-weight:600}
+/* the two summing rows read as the bottom line of each column */
+.cmp tr.sum th,.cmp tr.sum td{border-top:2px solid rgba(255,255,255,.28)!important;padding-top:17px}
+.cmp tr.sum td{font-size:clamp(1.2rem,2.5vw,1.6rem);font-weight:900;color:#fff}
+.cmp tr.sum .c-mr{color:var(--copper-200)}
+.cmp tr.gain td{font-weight:900}
+.cmp tr.gain .c-mr{color:var(--copper-300)}
+.cmp-line{margin-top:24px;font-family:var(--font-serif);font-size:1.02rem;color:var(--slate-300);max-width:62ch}
+.cmp-line b{font-family:var(--font-sans);font-weight:700;color:var(--copper-300);font-variant-numeric:tabular-nums}
+@media(max-width:560px){
+  .cmp th,.cmp td{padding:12px 9px}
+  .cmp tbody th{width:34%;font-size:.83rem}
+  .cmp thead th{font-size:.65rem;letter-spacing:.05em}
+  .cmp tbody td{font-size:1rem}
+}
 .stats{display:grid;gap:1px;margin-top:34px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
 grid-template-columns:repeat(2,1fr)}
 @media(min-width:760px){.stats{grid-template-columns:repeat(4,1fr)}}
@@ -542,39 +575,63 @@ pointer-events:auto;transition:none!important}
           <input type="range" id="rate" min="0" max="5" step="0.01" value="0.62" aria-describedby="rateOut rateNote">
           <div id="rateNote" class="ratehint">National average today is <b>0.62%</b>. The best high-yield accounts pay about <b>4%</b> — drag it there and see for yourself.</div>
         </div>
-        <div class="toggles">
-          <button class="tg" id="tgHysa" aria-pressed="true">Show savings line</button>
-          <button class="tg" id="tgExit" aria-pressed="false">What if I stop early?</button>
-        </div>
       </div>
 
       <div class="chartbox"><svg id="chart" viewBox="0 0 900 340" role="img" aria-labelledby="chartTitle"><title id="chartTitle">Value over sixty months</title></svg></div>
       <div class="legend">
-        <span><i style="background:#E79145"></i>Your CoSpark position</span>
-        <span id="lgHysa"><i style="background:#60BBA6"></i><span id="lgHysaTxt">0.62% savings account</span></span>
-        <span><i style="background:#697B8C"></i>What you contributed</span>
+        <span><i class="ln solid" style="background:#E79145"></i>Member Reserve Total</span>
+        <span><i class="ln solid" style="background:#BDC9D5"></i><span id="lgSavTxt">Conventional Savings</span></span>
+        <span><i class="ln dash"></i>Your Contribution</span>
       </div>
 
-      <div class="stats">
-        <div class="stat"><div class="k">You contribute</div><div class="v" id="stContrib">$6,000</div><div class="n">over 60 months</div></div>
-        <div class="stat"><div class="k">Boost Payments</div><div class="v" id="stBoost">$1,846</div><div class="n">paid as you go</div></div>
-        <div class="stat"><div class="k">Month 60 redemption</div><div class="v" id="stRedeem">$6,300</div><div class="n">reserve plus 5%</div></div>
-        <div class="stat hi"><div class="k">Net benefit</div><div class="v" id="stNet">$2,146</div><div class="n">above what you put in</div></div>
-      </div>
-
-      <div class="stats" style="margin-top:1px">
-        <div class="stat"><div class="k">Points earned</div><div class="v" id="stPoints">6,000</div><div class="n">your standing in the commonwealth</div></div>
-        <div class="stat"><div class="k">Effective annual return</div><div class="v" id="stIrr">≈17%</div><div class="n">time value of money included</div></div>
-        <div class="stat"><div class="k">Same money in savings</div><div class="v" id="stHysa">$95</div><div class="n" id="stHysaNote">0.62% APY, 60 months</div></div>
-        <div class="stat hi"><div class="k">Difference</div><div class="v" id="stDiff">$1,422</div><div class="n">CoSpark above savings</div></div>
-      </div>
-
-      <div class="exitnote" id="exitNote" style="display:none">
-        <b>If life happens and you stop at month <span id="exMonth">24</span>:</b>
-        you receive your contributions back less the Boost Payments already paid to you (<b id="exPayout">$1,662</b>), and the 5% premium stays with the program. Add the <b id="exBoost">$738</b> in Boosts you already received and you have
-        <b id="exTotal">$2,400</b> in hand against <b id="exContrib">$2,400</b> contributed. You come out whole.
-        <input type="range" id="exSlider" min="6" max="59" step="1" value="24" style="margin-top:16px" aria-label="Month you stop contributing">
-      </div>
+      <table class="cmp">
+        <caption class="sr-only">The same money over sixty months, in a conventional savings account and in the Member Reserve Program</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Line item</span></th>
+            <th scope="col" class="c-conv">Conventional Savings<span class="sub" id="cmpRate">at 0.62% APY</span></th>
+            <th scope="col" class="c-mr">Member Reserve<span class="sub">CoSpark</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Your Contribution<span class="sub">60 monthly payments</span></th>
+            <td class="c-conv" id="tConvIn">$6,000</td>
+            <td class="c-mr" id="tMrIn">$6,000</td>
+          </tr>
+          <tr>
+            <th scope="row">What it earns you<span class="sub">interest · Boost Payments</span></th>
+            <td class="c-conv" id="tConvEarn">$95</td>
+            <td class="c-mr" id="tMrEarn">$1,846</td>
+          </tr>
+          <tr>
+            <th scope="row">Completion premium<span class="sub">5% at month 60</span></th>
+            <td class="c-conv zero">—</td>
+            <td class="c-mr" id="tMrPrem">$300</td>
+          </tr>
+          <tr class="sum">
+            <th scope="row">Total at month 60</th>
+            <td class="c-conv" id="tConvTot">$6,095</td>
+            <td class="c-mr" id="tMrTot">$8,146</td>
+          </tr>
+          <tr class="gain">
+            <th scope="row">Net gain<span class="sub">above what you put in</span></th>
+            <td class="c-conv" id="tConvGain">$95</td>
+            <td class="c-mr" id="tMrGain">$2,146</td>
+          </tr>
+          <tr>
+            <th scope="row">Effective annual return</th>
+            <td class="c-conv" id="tConvIrr">0.62%</td>
+            <td class="c-mr">≈17%</td>
+          </tr>
+          <tr>
+            <th scope="row">Points earned<span class="sub">your standing in the commonwealth</span></th>
+            <td class="c-conv zero">0</td>
+            <td class="c-mr" id="tMrPts">6,000</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="cmp-line">The same money, the same sixty months. The difference is <b id="tDiff">$2,051</b> and a track record the commonwealth can build on.</p>
 
       <p class="footnote">Boost Payment equals your contribution divided by 3.25. Effective annual return is the internal rate of return on the full 60-month cash flow expressed as an annual equivalent. It lands between 16.7% and 17.2% depending on the timing convention used for the final redemption, which is why we state it as approximately 17%, and it holds at any contribution amount. Boost Payments and the 5% premium are taxable income and a 1099 is issued annually; the return of your own reserve is not taxable. Savings comparison applies the rate you set, compounded monthly on the same deposits. It opens at 0.62%, the national average savings yield reported by Bankrate on August 28, 2026. Figures illustrate program terms and are not a promise of future results.</p>
     </div>
@@ -863,8 +920,6 @@ function hmRate(){ return Math.pow(1+(+rate.value)/100,1/12)-1 }
 // defensible, so the page states the honest round number rather than false precision.
 var EFF_APY_LABEL="≈17%";
 var amt=$("#amt"), amtOut=$("#amtOut");
-var tgHysa=$("#tgHysa"), tgExit=$("#tgExit"), exNote=$("#exitNote"), exS=$("#exSlider");
-var showHysa=true, showExit=false;
 
 function series(c){
   var cos=[0],hy=[0],con=[0],bal=0,hm=hmRate();
@@ -880,7 +935,7 @@ function drawChart(c){
   var s=series(c), svg=$("#chart");
   var narrow=window.innerWidth<640;
   var W=900,H=narrow?470:340,PL=narrow?80:64,PR=18,PT=18,PB=narrow?44:34;
-  var max=Math.max(s.cos[N], showHysa?s.hy[N]:0)*1.06;
+  var max=Math.max(s.cos[N], s.hy[N])*1.06;
   var x=function(m){return PL+(W-PL-PR)*(m/N)};
   var y=function(v){return H-PB-(H-PT-PB)*(v/max)};
   function path(arr){ return arr.map(function(v,m){return (m?"L":"M")+x(m).toFixed(1)+" "+y(v).toFixed(1)}).join(" "); }
@@ -896,15 +951,10 @@ function drawChart(c){
   });
   // area under cospark
   g+='<path d="'+path(s.cos)+' L'+x(N).toFixed(1)+' '+y(0)+' L'+x(0).toFixed(1)+' '+y(0)+' Z" fill="rgba(231,145,69,.13)"/>';
+  g+='<path d="'+path(s.hy)+'" fill="none" stroke="#BDC9D5" stroke-width="2.4"/>';
   g+='<path d="'+path(s.con)+'" fill="none" stroke="#697B8C" stroke-width="2" stroke-dasharray="5 5"/>';
-  if(showHysa) g+='<path d="'+path(s.hy)+'" fill="none" stroke="#60BBA6" stroke-width="2.4"/>';
   g+='<path d="'+path(s.cos)+'" fill="none" stroke="#E79145" stroke-width="3.4" stroke-linejoin="round"/>';
   g+='<circle cx="'+x(N).toFixed(1)+'" cy="'+y(s.cos[N]).toFixed(1)+'" r="6" fill="#E79145" stroke="#0B1520" stroke-width="2.5"/>';
-  if(showExit){
-    var k=+exS.value;
-    g+='<line x1="'+x(k).toFixed(1)+'" y1="'+PT+'" x2="'+x(k).toFixed(1)+'" y2="'+(H-PB)+'" stroke="#008C76" stroke-width="2" stroke-dasharray="4 4"/>';
-    g+='<circle cx="'+x(k).toFixed(1)+'" cy="'+y(s.cos[k]).toFixed(1)+'" r="5" fill="#60BBA6" stroke="#0B1520" stroke-width="2.5"/>';
-  }
   svg.setAttribute('viewBox','0 0 '+W+' '+H);
   svg.innerHTML='<title id="chartTitle">Value over sixty months at '+fmt0(c)+' per month</title>'+g;
 }
@@ -914,38 +964,29 @@ function paintLedger(){
   var boost=c/DIV, tb=boost*N, contrib=c*N, redeem=contrib*(1+PREM), net=tb+contrib*PREM;
   var hm=hmRate(), bal=0; for(var m=0;m<N;m++) bal=(bal+c)*(1+hm);
   var hysaInt=bal-contrib;
-  $("#stContrib").textContent=fmt0(contrib);
-  $("#stBoost").textContent=fmt0(tb);
-  $("#stRedeem").textContent=fmt0(redeem);
-  $("#stNet").textContent=fmt0(net);
-  $("#stPoints").textContent=fmtN(contrib);
   var rv=(+rate.value).toFixed(2);
   rateOut.innerHTML=rv+"%<small> APY</small>";
-  $("#lgHysaTxt").textContent=rv+"% savings account";
-  $("#stHysaNote").textContent=rv+"% APY, 60 months";
-  $("#stIrr").textContent=EFF_APY_LABEL;
-  $("#stHysa").textContent=fmt0(hysaInt);
-  $("#stDiff").textContent=fmt0(net-hysaInt);
-  var k=+exS.value, exB=boost*k, exC=c*k, exP=exC-exB;
-  $("#exMonth").textContent=k;
-  $("#exPayout").textContent=fmt0(exP);
-  $("#exBoost").textContent=fmt0(exB);
-  $("#exTotal").textContent=fmt0(exP+exB);
-  $("#exContrib").textContent=fmt0(exC);
+  $("#lgSavTxt").textContent="Conventional Savings ("+rv+"%)";
+  $("#cmpRate").textContent="at "+rv+"% APY";
+  // left column: the same money in an ordinary savings account
+  $("#tConvIn").textContent=fmt0(contrib);
+  $("#tConvEarn").textContent=fmt0(hysaInt);
+  $("#tConvTot").textContent=fmt0(contrib+hysaInt);
+  $("#tConvGain").textContent=fmt0(hysaInt);
+  $("#tConvIrr").textContent=rv+"%";
+  // right column: the same money in the Member Reserve
+  $("#tMrIn").textContent=fmt0(contrib);
+  $("#tMrEarn").textContent=fmt0(tb);
+  $("#tMrPrem").textContent=fmt0(contrib*PREM);
+  $("#tMrTot").textContent=fmt0(contrib+tb+contrib*PREM);
+  $("#tMrGain").textContent=fmt0(net);
+  $("#tMrPts").textContent=fmtN(contrib);
+  $("#tDiff").textContent=fmt0(net-hysaInt);
   drawChart(c);
 }
 amt.addEventListener("input",paintLedger);
 rate.addEventListener("input",paintLedger);
 var rzT;window.addEventListener("resize",function(){clearTimeout(rzT);rzT=setTimeout(paintLedger,180)});
-exS.addEventListener("input",paintLedger);
-tgHysa.addEventListener("click",function(){
-  showHysa=!showHysa; tgHysa.setAttribute("aria-pressed",showHysa?"true":"false");
-  $("#lgHysa").style.opacity=showHysa?"1":".35"; paintLedger();
-});
-tgExit.addEventListener("click",function(){
-  showExit=!showExit; tgExit.setAttribute("aria-pressed",showExit?"true":"false");
-  exNote.style.display=showExit?"block":"none"; paintLedger();
-});
 paintLedger();
 
 /* ══ PATHWAYS ══ */
