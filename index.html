@@ -182,7 +182,17 @@ padding:0 clamp(16px,4vw,40px);overflow:hidden}
 .mr-svg{width:100%;max-width:1180px;height:min(34svh,300px);overflow:hidden;display:block;
 transition:-webkit-mask-image .4s ease}
 .mr-el{opacity:0;transition:opacity .65s ease}
-@media(max-width:899px){.mr-svg .mr-lg{display:none}}
+@media(max-width:899px){
+  .mr-svg .mr-lg{display:none}
+  /* every small label comes out — the step card beside it says the same thing,
+     and at this size they were the only reason the frame had to move at all */
+  .mr-svg [data-r="cap"],.mr-svg [data-r="conn"],.mr-svg [data-r="r5"]{display:none}
+  /* box matches the artwork's own proportions, so nothing is letterboxed */
+  .mr-svg{height:auto;aspect-ratio:1515/496}
+  /* the ring tucks in a little, since the label below it is proportionally
+     much larger at this scale */
+  .mr-svg .mr-ring{r:126}
+}
 @media(min-width:900px){.mr-svg .mr-sm{display:none}}
 .mr-el.on{opacity:1}
 
@@ -196,16 +206,16 @@ transition:-webkit-mask-image .4s ease}
    sequence; only the text inside it swaps. That makes the change legible from
    the corner of the eye, which a plain cross-fade never was. Every pairing
    below clears 4.5:1, so the copy stays readable on its own colour. */
-.mr-cards[data-tone="1"],.mr-cards[data-tone="5"]{      /* you — the member's own light */
+.mr-cards[data-tone="1"],.mr-cards[data-tone="5"]{--step-cta:rgba(17,32,42,.08);      /* you — the member's own light */
   --step-bg:#DCE4ED;--step-edge:#B5C4D3;--step-fg:#11202A;--step-body:#3E5060;
   --step-accent:#7A3F14;--step-track:rgba(17,32,42,.14);--step-done:rgba(17,32,42,.42);--step-now:#AF5D20}
-.mr-cards[data-tone="2"]{                                /* contribute — the reserve's copper */
+.mr-cards[data-tone="2"]{--step-cta:rgba(255,255,255,.14);                                /* contribute — the reserve's copper */
   --step-bg:#AF5D20;--step-edge:#8E4A17;--step-fg:#fff;--step-body:rgba(255,255,255,.95);
   --step-accent:#fff;--step-track:rgba(255,255,255,.26);--step-done:rgba(255,255,255,.58);--step-now:#fff}
-.mr-cards[data-tone="3"]{                                /* capability — the lighter patina */
+.mr-cards[data-tone="3"]{--step-cta:rgba(255,255,255,.14);                                /* capability — the lighter patina */
   --step-bg:#007A66;--step-edge:#006152;--step-fg:#fff;--step-body:rgba(255,255,255,.95);
   --step-accent:#fff;--step-track:rgba(255,255,255,.26);--step-done:rgba(255,255,255,.58);--step-now:#fff}
-.mr-cards[data-tone="4"]{                                /* boost payment — the deeper patina */
+.mr-cards[data-tone="4"]{--step-cta:rgba(255,255,255,.14);                                /* boost payment — the deeper patina */
   --step-bg:#00564A;--step-edge:#00423A;--step-fg:#fff;--step-body:rgba(255,255,255,.95);
   --step-accent:#fff;--step-track:rgba(255,255,255,.26);--step-done:rgba(255,255,255,.58);--step-now:#fff}
 
@@ -236,7 +246,14 @@ transition:background-color .5s ease}
 color:var(--step-accent);transition:color .6s ease}
 .mr-card h3{color:var(--step-fg);margin:11px 0 11px;transition:color .6s ease}
 .mr-card p{font-size:.92rem;color:var(--step-body);max-width:none;transition:color .6s ease}
-.mr-card p.mr-cta{margin-top:11px;font-weight:700;color:var(--step-fg)}
+/* the hand-off to the calculator is the one instruction in the whole sequence,
+   so it is set apart rather than left as another paragraph */
+.mr-card p.mr-cta{margin:14px 0 0;padding:12px 15px 12px 14px;border-radius:7px;
+font-size:clamp(.9rem,1.1vw,1rem);font-weight:700;color:var(--step-fg);
+background:var(--step-cta);border-left:3px solid var(--step-now);
+display:flex;gap:11px;align-items:baseline;transition:background-color .6s ease,color .6s ease}
+.mr-card p.mr-cta::before{content:"\2193";flex:none;font-size:1.1em;line-height:1;
+color:var(--step-now);font-weight:700}
 
 @media(min-width:900px){
   .mr-svg{height:min(44svh,400px)}
@@ -498,16 +515,16 @@ max-width:760px;margin:0 auto;padding:0 clamp(20px,5vw,56px)}
 .mr-card{position:static;width:auto!important;opacity:1!important;transform:none!important;
 pointer-events:auto;transition:none!important;
 background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--r);padding:24px 30px}
-.mr-card[data-step="1"],.mr-card[data-step="5"]{
+.mr-card[data-step="1"],.mr-card[data-step="5"]{--step-cta:rgba(17,32,42,.08);
   --step-bg:#DCE4ED;--step-edge:#B5C4D3;--step-fg:#11202A;--step-body:#3E5060;
   --step-accent:#7A3F14;--step-track:rgba(17,32,42,.14);--step-done:rgba(17,32,42,.42);--step-now:#AF5D20}
-.mr-card[data-step="2"]{
+.mr-card[data-step="2"]{--step-cta:rgba(255,255,255,.14);
   --step-bg:#AF5D20;--step-edge:#8E4A17;--step-fg:#fff;--step-body:rgba(255,255,255,.95);
   --step-accent:#fff;--step-track:rgba(255,255,255,.26);--step-done:rgba(255,255,255,.58);--step-now:#fff}
-.mr-card[data-step="3"]{
+.mr-card[data-step="3"]{--step-cta:rgba(255,255,255,.14);
   --step-bg:#007A66;--step-edge:#006152;--step-fg:#fff;--step-body:rgba(255,255,255,.95);
   --step-accent:#fff;--step-track:rgba(255,255,255,.26);--step-done:rgba(255,255,255,.58);--step-now:#fff}
-.mr-card[data-step="4"]{
+.mr-card[data-step="4"]{--step-cta:rgba(255,255,255,.14);
   --step-bg:#00564A;--step-edge:#00423A;--step-fg:#fff;--step-body:rgba(255,255,255,.95);
   --step-accent:#fff;--step-track:rgba(255,255,255,.26);--step-done:rgba(255,255,255,.58);--step-now:#fff}
 /* no slide stacking: the sections simply follow one another down the page.
@@ -670,9 +687,9 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
 <g class="mr-el" data-stage="2"><circle cx="923" cy="352" r="11.8" fill="#F8A96B"></circle></g>
 <g class="mr-el" data-stage="2"><circle cx="957" cy="352" r="11.8" fill="#F8A96B"></circle></g>
 <g class="mr-el" data-stage="2"><circle cx="388.5" cy="208.5" r="12.5" fill="#F8A96B"></circle></g>
-<g class="mr-el" data-stage="2"><text data-r="amt" x="414" y="223.7" font-size="32.66" font-weight="700" fill="#EDF2F7" text-anchor="start" font-family="DM Sans 14pt, DM Sans, sans-serif"><tspan fill="#F8A96B">$100</tspan> CONTRIBUTED</text></g>
+<g class="mr-el" data-stage="2"><text data-r="amt" class="mr-lg" x="414" y="223.7" font-size="32.66" font-weight="700" fill="#EDF2F7" text-anchor="start" font-family="DM Sans 14pt, DM Sans, sans-serif"><tspan fill="#F8A96B">$100</tspan> CONTRIBUTED</text><text data-r="amt" class="mr-sm" x="414" y="223.7" font-size="32.66" font-weight="700" fill="#F8A96B" text-anchor="start" font-family="DM Sans 14pt, DM Sans, sans-serif">$100</text></g>
 <g class="mr-el" data-stage="2"><text data-r="cap" class="mr-lg" x="547" y="256.95" font-size="20.18" font-weight="400" fill="#BDC9D5" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">any amount • any time • $10 minimum</text><text data-r="cap" class="mr-sm" x="547" y="256.95" font-size="20.18" font-weight="400" fill="#BDC9D5" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">from $10 · any time</text></g>
-<g class="mr-el mr-you" data-stage="1"><text data-r="node" x="236" y="606" font-size="30.51" font-weight="700" fill="#EDF2F7" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">YOU</text></g>
+<g class="mr-el mr-you" data-stage="1"><text data-r="node" class="mr-lg" x="236" y="606" font-size="30.51" font-weight="700" fill="#EDF2F7" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">YOU</text><text data-r="node" class="mr-sm" x="236" y="650" font-size="30.51" font-weight="700" fill="#EDF2F7" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">YOU</text></g>
 <g class="mr-el" data-stage="2"><text data-r="node" x="905.5" y="451.49" font-size="32.29" font-weight="700" fill="#EDF2F7" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">RESERVE</text></g>
 <g class="mr-el" data-stage="2"><text data-r="cap" x="905.5" y="491" font-size="20.3" font-weight="400" fill="#BDC9D5" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">your contribution stays put<tspan x="905.5" dy="1.32em">100 Points added.</tspan></text></g>
 <g class="mr-el" data-stage="3"><text data-r="conn" x="1205" y="266" font-size="17.87" font-weight="700" fill="#EDF2F7" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif"><tspan x="1205" dy="-1.28em">Members' collective</tspan><tspan x="1205" dy="1.28em">60 month commitment</tspan></text></g>
@@ -681,7 +698,7 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
 <g class="mr-el" data-stage="4"><text data-r="cap" class="mr-lg" x="1553" y="645.28" font-size="20.26" font-weight="400" fill="#BDC9D5" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">CoSpark's reserve-backed businesses</text><text data-r="cap" class="mr-sm" x="1553" y="645.28" font-size="20.26" font-weight="400" fill="#BDC9D5" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">reserve-backed businesses</text></g>
 <g class="mr-el" data-stage="4"><text data-r="payoff" x="680" y="658.43" font-size="49.77" font-weight="400" fill="#60BBA6" text-anchor="start" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">$30.77</text></g>
 <g class="mr-el" data-stage="4"><text data-r="cap" class="mr-lg" x="905" y="632.42" font-size="20.12" font-weight="400" fill="#BDC9D5" text-anchor="start" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">boost payment<tspan x="905" dy="1.32em">funded by corporate revenue.</tspan></text></g>
-<g class="mr-el mr-r5" data-stage="5"><circle cx="236" cy="432" r="134" fill="none" stroke="#60BBA6" stroke-width="9"></circle></g>
+<g class="mr-el mr-r5" data-stage="5"><circle class="mr-ring" cx="236" cy="432" r="134" fill="none" stroke="#60BBA6" stroke-width="9"></circle></g>
 <g class="mr-el mr-r5" data-stage="5"><circle cx="236" cy="298" r="16" fill="#F8A96B"></circle></g>
 <g class="mr-el" data-stage="5"><text data-r="r5" x="236" y="656" font-size="26" font-weight="700" fill="#F8A96B" text-anchor="middle" xml:space="preserve" font-family="DM Sans 14pt, DM Sans, sans-serif">MONTH 60<tspan data-r="cap" x="236" dy="1.5em" font-size="20.3" font-weight="400" fill="#BDC9D5">reserve returned + 5%</tspan></text></g>
 </g>
@@ -1099,17 +1116,10 @@ function showCard(step){
    large, then travels to the position it will keep for the rest of the piece. */
 var FINAL={x:20, y:173, w:1515, h:496};
 
-/* A phone cannot hold the whole mechanism at a readable size — at full width
-   the captions render at four pixels. So below 900px the frame still moves,
-   following the money one hop at a time. */
-var SHOT_NARROW=[
-  {x:30,   y:300, w:250, h:300},         // 1 · you
-  {x:20,   y:200, w:880, h:420},         // 2 · you → reserve
-  {x:620,  y:200, w:900, h:420},         // 3 · reserve → capability
-  {x:20,   y:330, w:820, h:340},         // 4 · the boost arriving back at you
-  {x:20,   y:290, w:600, h:380},         // 5 · redemption, on you
-  {x:20,   y:290, w:600, h:380}          //   · tail
-];
+/* A phone used to get its own moving camera, because the small captions were
+   illegible at full width. Those captions are hidden below 900px now and the
+   cards carry that detail instead, which lets the narrow frame hold the whole
+   mechanism still — the same one orientation as everywhere else. */
 var WIDE=window.matchMedia("(min-width:900px)");
 
 /* ── the opening move ──
@@ -1118,9 +1128,10 @@ var WIDE=window.matchMedia("(min-width:900px)");
    (937.5,422.3) in the same space, so the travel is the difference. */
 var youEls=[].slice.call(document.querySelectorAll(".mr-you"));
 function youIntro(p){
-  var t = p<=0.001 ? null :
+  var k = WIDE.matches ? 0.35 : 0.18;   // the narrow label sits lower and would
+  var t = p<=0.001 ? null :               // otherwise be pushed past the frame
     "translate("+(701.5*p).toFixed(1)+","+(-9.7*p).toFixed(1)+") "+
-    "translate(236,432) scale("+(1+0.35*p).toFixed(3)+") translate(-236,-432)";
+    "translate(236,432) scale("+(1+k*p).toFixed(3)+") translate(-236,-432)";
   for(var i=0;i<youEls.length;i++){
     if(t) youEls[i].setAttribute("transform",t);
     else youEls[i].removeAttribute("transform");
@@ -1133,7 +1144,7 @@ function youIntro(p){
    scaling each label against the current camera keeps them where they were
    drawn but at a size a person can actually read. */
 var LABEL_WIDE  ={node:21, amt:22, cap:15, conn:14, payoff:32, r5:20};
-var LABEL_NARROW={node:17, amt:18, cap:12, conn:12, payoff:26, r5:16};
+var LABEL_NARROW={node:15, amt:15, cap:12, conn:12, payoff:20, r5:14};
 var mrText=[].slice.call(mrSvg.querySelectorAll("[data-r]"));
 // remember what each label was drawn at, so counter-scaling can be capped
 mrText.forEach(function(t){ t.setAttribute("data-a", t.getAttribute("font-size")) });
@@ -1145,7 +1156,7 @@ function sizeLabels(scale){
     // there is a ceiling on how far a label can be pushed past the size it was
     // drawn at before the artwork's own spacing stops holding it. The narrow
     // frames are tighter and carry fewer labels, so they can take more.
-    var a=+t.getAttribute("data-a"), lim=WIDE.matches?1.5:1.75;
+    var a=+t.getAttribute("data-a"), lim=WIDE.matches?1.5:2.4;
     t.setAttribute("font-size", Math.min(target/scale, a*lim).toFixed(2));
   }
 }
@@ -1190,19 +1201,9 @@ var lastStep=-1;
 function paintMechanism(){
   var f=mrProgress();
   var i=Math.max(0,Math.min(mrSteps.length-1,Math.floor(f)));
-  if(WIDE.matches){
-    frame(FINAL);
-    // the member settles into place across the first card, then stays put
-    youIntro(1-easeInOut(clamp01((f-0.06)/0.60)));
-  }else{
-    var S=SHOT_NARROW;
-    var j=Math.min(S.length-1,i+1);
-    // hold the frame still while the card is being read, then glide to the next
-    var t=easeInOut(clamp01((f-i-0.42)/0.58));
-    frame({x:lerp(S[i].x,S[j].x,t), y:lerp(S[i].y,S[j].y,t),
-           w:lerp(S[i].w,S[j].w,t), h:lerp(S[i].h,S[j].h,t)});
-    youIntro(0);
-  }
+  frame(FINAL);
+  // the member settles into place across the first card, then stays put
+  youIntro(1-easeInOut(clamp01((f-0.06)/0.60)));
   if(i!==lastStep){
     lastStep=i;
     setStage(+mrSteps[i].dataset.stage);
@@ -1216,9 +1217,7 @@ if(RM){
   mrSvg.setAttribute("viewBox","20 173 1515 496"); lastFrame="20.0 173.0 1515.0 496.0";
   sizeLabels(mrSvg.getBoundingClientRect().width/1515); youIntro(0);
 }else{
-  setStage(1); showCard(1);
-  frame(WIDE.matches?FINAL:SHOT_NARROW[0]);
-  if(WIDE.matches) youIntro(1);
+  setStage(1); showCard(1); frame(FINAL); youIntro(1);
 }
 
 /* ── slide stack ──
@@ -1263,8 +1262,7 @@ function frameLoop(){
 }
 function onScrollFx(){ if(!ticking){ ticking=true; requestAnimationFrame(frameLoop); } }
 window.addEventListener("scroll",onScrollFx,{passive:true});
-function mrRelayout(){ lastFrame=""; lastStep=-1; onScrollFx();
-  if(!WIDE.matches) youIntro(0); }
+function mrRelayout(){ lastFrame=""; lastStep=-1; onScrollFx(); }
 window.addEventListener("resize",mrRelayout);
 if(WIDE.addEventListener) WIDE.addEventListener("change",mrRelayout);
 frameLoop();
