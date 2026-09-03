@@ -431,7 +431,8 @@ background:rgba(0,140,118,.07);font-size:.9rem;color:var(--body)}
 .dark .footnote{color:var(--slate-400)}
 
 /* ── pathways ── */
-.paths{display:grid;gap:14px;margin-top:32px;grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.paths{display:grid;gap:14px;margin-top:32px;
+grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr))}
 .path{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:26px 24px;
 cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;position:relative}
 .path::after{content:"+";position:absolute;top:22px;right:22px;font-size:1.3rem;line-height:1;
@@ -445,7 +446,7 @@ color:var(--copper-400);transition:transform .28s ease}
 .dark .path p{color:var(--slate-400)}
 .path .more{max-height:0;overflow:hidden;transition:max-height .34s ease;font-size:.86rem;color:var(--slate-600)}
 .dark .path .more{color:var(--slate-400)}
-.path[aria-expanded="true"] .more{max-height:200px}
+.path[aria-expanded="true"] .more{max-height:none}
 .path .more p{margin-top:13px;padding-top:13px;border-top:1px solid var(--line)}
 .dark .path .more p{border-color:rgba(255,255,255,.13)}
 
@@ -1186,6 +1187,13 @@ function sizeSlides(){
 sizeSlides();
 window.addEventListener("load",function(){ sizeSlides(); setTimeout(sizeSlides,400); });
 window.addEventListener("resize",sizeSlides);
+// a slide can also change height without the window doing anything — opening a
+// pathway card, or the calculation note. A stale --sh pins the slide at the
+// wrong offset and strands whatever grew past it.
+if(window.ResizeObserver){
+  var slideRO=new ResizeObserver(function(){ sizeSlides() });
+  slides.forEach(function(s){ slideRO.observe(s) });
+}
 
 /* ── chapter hand-off ── */
 var chapters=[].slice.call(document.querySelectorAll("section")).filter(function(s){
@@ -1319,7 +1327,21 @@ $("#paths").innerHTML=PATHS.map(function(p,i){
    '<div class="more"><p>'+p[3]+'</p></div></div>';
 }).join("");
 document.querySelectorAll(".path").forEach(function(el){
-  function tog(){ el.setAttribute("aria-expanded", el.getAttribute("aria-expanded")==="true"?"false":"true") }
+  var more=el.querySelector(".more");
+  // animate to the height the content actually needs, then release the cap so
+  // nothing can clip it afterwards — a rotation, a font-size change, anything
+  function tog(){
+    var open = el.getAttribute("aria-expanded")!=="true";
+    el.setAttribute("aria-expanded", open?"true":"false");
+    if(!more) return;
+    if(open){
+      more.style.maxHeight = more.scrollHeight+"px";
+      setTimeout(function(){ if(el.getAttribute("aria-expanded")==="true") more.style.maxHeight="none"; },360);
+    }else{
+      more.style.maxHeight = more.scrollHeight+"px";
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ more.style.maxHeight="0px" }) });
+    }
+  }
   el.addEventListener("click",tog);
   el.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();tog()} });
   io.observe(el);
