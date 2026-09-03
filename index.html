@@ -604,10 +604,6 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
       <div class="spend-panel rv d2">
         <h3>Your month, roughly</h3>
         <div class="spend-row">
-          <label for="s0">Groceries <span class="val" id="v0">$600</span></label>
-          <input type="range" id="s0" min="0" max="2000" step="25" value="600" aria-describedby="tally-out">
-        </div>
-        <div class="spend-row">
           <label for="s1">Rent <span class="val" id="v1">$1,500</span></label>
           <input type="range" id="s1" min="0" max="5000" step="50" value="1500" aria-describedby="tally-out">
         </div>
@@ -636,7 +632,7 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
     <div class="eyebrow on-dark rv">The journey</div>
     <div class="rule rv"></div>
     <h2 class="rv d1">From consumer to commonwealth owner.</h2>
-    <p class="lede rv d2" style="margin-top:24px">CoSpark is a member-driven commonwealth community, purpose-built to help people move from being consumers to becoming owners. The value generated stays with the members, and increased participation yields increased ownership.</p>
+    <p class="lede rv d2" style="margin-top:24px">CoSpark is a member-driven commonwealth community, purpose-built to help people move from being consumers to becoming owners. The value generated stays with the members, and increased participation within the commonwealth yields increased ownership.</p>
     <div class="journey">
       <div class="jcard rv d1">
         <div class="tag">Where most people start</div>
@@ -650,7 +646,7 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
       <div class="jcard own rv d3">
         <div class="tag">The CoSpark pathway</div>
         <h3>Commonwealth owner</h3>
-        <p>You work toward a durable ownership stake. Owner benefits begin from the moment you start participating, and after five years a range of ownership pathways opens wide.</p>
+        <p>You work toward a durable ownership stake. Owner benefits begin from the moment you start participating, and after five years of activity in the commonwealth a range of ownership pathways opens wide.</p>
       </div>
     </div>
   </div>
@@ -672,7 +668,7 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
     <div class="eyebrow on-dark rv">The first step</div>
     <div class="rule rv"></div>
     <h2 class="rv d1">Participating in the commonwealth starts with the Member Reserve Program.</h2>
-    <p class="lede rv d2" style="margin-top:24px">This is a structured program with defined benefits, funded by corporate revenue. Your reserve stays secure, and the terms are set before you start.</p>
+    <p class="lede rv d2" style="margin-top:24px">This is a structured financial growth program with remarkable benefits, funded by corporate revenue. Your reserve stays secure, and the terms are set before you start.</p>
   </div>
 </section>
 
@@ -726,22 +722,22 @@ background:var(--step-bg);border:1px solid var(--step-edge);border-radius:var(--
         <div class="mr-card" data-step="1">
           <div class="mr-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
           <div class="num">Step 1 of 5 · You</div><h3>It begins with you.</h3>
-          <p>Every part of the model begins with a member deciding to participate. The reserve, the capability, and the Boost Payment all follow from this.</p>
+          <p>Every part of the model begins with the member deciding to participate. The reserve and its associated benefits all follow from this.</p>
         </div>
         <div class="mr-card" data-step="2">
           <div class="mr-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
           <div class="num">Step 2 of 5 · Contribute</div><h3>You make a contribution. CoSpark holds it securely.</h3>
-          <p>Any amount, any time, from $10. The contribution goes into your own reserve and stays there. Every dollar also creates a Point, the record of your commitment.</p>
+          <p>Any amount, any time, from $10. The contribution is held in your secure reserve. Every dollar you contribute creates a Point, which is a record of your commitment and activity in the commonwealth.</p>
         </div>
         <div class="mr-card" data-step="3">
           <div class="mr-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="num">Step 3 of 5 · Capability</div><h3>Combined reserves create real capability.</h3>
-          <p>Because members commit for sixty months, CoSpark can plan against that commitment. Reserves taken together create institutional capability: reserve-backed businesses that generate revenue. This is the step that answers "where does the new money come from?"</p>
+          <div class="num">Step 3 of 5 · Capability</div><h3>CoSpark members&#8217; combined reserves create real capability.</h3>
+          <p>Because members commit for sixty months, CoSpark can plan against that commitment. Reserves taken together create institutional capability: reserve-backed businesses that generate revenue. And that revenue benefits members in real ways, as you will see in the next step.</p>
         </div>
         <div class="mr-card" data-step="4">
           <div class="mr-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="num">Step 4 of 5 · Boost Payment</div><h3>That capability funds your Boost Payment.</h3>
-          <p>Cash back from CoSpark-generated funds every time you contribute, funded by corporate revenue. It arrives typically within 24 to 48 hours and is triggered by every contribution, with no vesting and no waiting period.</p>
+          <div class="num">Step 4 of 5 · Boost Payment</div><h3>That capability funds what we call your Boost Payment.</h3>
+          <p>Every time you contribute, you receive cash back from CoSpark-generated funds. Boost Payments come from corporate revenue, paid back to you typically within 24 to 48 hours, with no vesting and no waiting period. A $100 contribution yields a $30.77 Boost Payment. Your $100 stays secure in your reserve. The $30.77 is yours to do with as you please. Contribute more and the Boost Payment grows proportionately.</p>
         </div>
         <div class="mr-card" data-step="5">
           <div class="mr-bar" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
@@ -1032,9 +1028,11 @@ if(abmName){
 }
 
 /* ══ OWNERS INTERACTIVE ══ */
-var legs=[].slice.call(document.querySelectorAll(".owners-svg .leg"));
-var sl=[0,1,2,3].map(function(i){return document.getElementById("s"+i)});
-var vv=[0,1,2,3].map(function(i){return document.getElementById("v"+i)});
+var legOf={};
+[].slice.call(document.querySelectorAll(".owners-svg .leg")).forEach(function(l){ legOf[l.dataset.leg]=l });
+var CTL=[{n:1,leg:"housing"},{n:2,leg:"insurance"},{n:3,leg:"credit"}];
+var sl=CTL.map(function(c){return document.getElementById("s"+c.n)});
+var vv=CTL.map(function(c){return document.getElementById("v"+c.n)});
 function paintOwners(){
   var vals=sl.map(function(s){return +s.value});
   var total=vals.reduce(function(a,b){return a+b},0);
@@ -1042,7 +1040,7 @@ function paintOwners(){
   vals.forEach(function(v,i){
     vv[i].textContent=fmt0(v);
     var share=v/mx;
-    var leg=legs[i]; if(!leg) return;
+    var leg=legOf[CTL[i].leg]; if(!leg) return;
     leg.style.opacity=(0.74+0.26*share).toFixed(3);
     var chev=leg.querySelectorAll(".leg-chevrons > g");
     var dur=(3.4-2.1*share).toFixed(2)+"s";
