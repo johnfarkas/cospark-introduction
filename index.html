@@ -33,6 +33,13 @@ font-weight:200 900;font-style:normal;font-display:swap}
 --white:#fff;--cream:#F5F0EB;
 --page:var(--slate-50);--ink:var(--slate-800);--body:var(--slate-600);--line:var(--slate-100);
 --maxw:1180px;--r:10px;
+/* ── installing under a site header ──
+   Set --chrome to the height of a header that stays fixed above this page and
+   everything that assumes it owns the viewport adjusts: the slides, the pinned
+   diagram, the progress rail, the calculator's control panel and anchor
+   offsets. Leave it at 0 for a standalone page, or for a site header that
+   scrolls away with the content. */
+--chrome:0px;--vh:calc(100svh - var(--chrome));
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 img{display:block;max-width:100%}
@@ -55,7 +62,7 @@ background-image:radial-gradient(circle at calc(var(--d)/2) 50%,
   var(--copper-500) 0 calc(var(--d)/2 - .5px), transparent calc(var(--d)/2));
 background-size:calc(var(--d) + var(--g)) 100%;background-repeat:repeat-x}
 .lede{font-family:var(--font-serif);font-size:clamp(1.08rem,1.7vw,1.28rem);line-height:1.62;color:var(--body)}
-section{padding:clamp(56px,7vh,96px) 0;position:relative;scroll-margin-top:64px;
+section{padding:clamp(56px,7vh,96px) 0;position:relative;scroll-margin-top:calc(var(--chrome) + 12px);
 background:var(--page)}
 
 /* ── the slide stack ──
@@ -65,7 +72,7 @@ background:var(--page)}
    long section scrolls through normally and only pins its last screenful before
    it gets covered, instead of pinning early and hiding its own bottom half.
    --sh is each section's measured height, set below. */
-.slide{position:sticky;top:min(0px, calc(100svh - var(--sh,100svh)));min-height:100svh;
+.slide{position:sticky;top:min(var(--chrome), calc(100svh - var(--sh,100svh)));min-height:var(--vh);
 box-shadow:0 -22px 56px -12px rgba(11,21,32,.5)}
 .slide:not(#hero):not(#close){display:flex;flex-direction:column;justify-content:center}
 /* a flex item with auto side margins shrinks to its content instead of
@@ -83,7 +90,7 @@ section.dark+section.dark{padding-top:clamp(16px,2.5vh,32px)}
 .deep{background:var(--slate-950)}
 
 /* ── progress rail + nav ── */
-#rail{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--copper-600),var(--copper-300));z-index:90;transition:width .1s linear}
+#rail{position:fixed;top:var(--chrome);left:0;height:3px;width:0;background:linear-gradient(90deg,var(--copper-600),var(--copper-300));z-index:90;transition:width .1s linear}
 
 /* ── reveal ── */
 .rv{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
@@ -93,8 +100,8 @@ section.dark+section.dark{padding-top:clamp(16px,2.5vh,32px)}
 .rv.d1{transition-delay:.09s}.rv.d2{transition-delay:.18s}.rv.d3{transition-delay:.27s}.rv.d4{transition-delay:.36s}
 
 /* ── hero ── */
-#hero{min-height:100svh;display:flex;align-items:flex-end;padding:0 0 clamp(56px,9vh,104px);
-background:var(--slate-950);position:sticky;top:min(0px, calc(100svh - var(--sh,100svh)));overflow:hidden}
+#hero{min-height:var(--vh);display:flex;align-items:flex-end;padding:0 0 clamp(56px,9vh,104px);
+background:var(--slate-950);position:sticky;top:min(var(--chrome), calc(100svh - var(--sh,100svh)));overflow:hidden}
 #hero .bg{position:absolute;inset:0;background-size:cover;background-position:center}
 #hero .scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(11,32,42,.35) 0%,rgba(11,32,42,.62) 42%,rgba(11,32,42,.92) 100%)}
 #hero .wrap{position:relative;z-index:2}
@@ -185,7 +192,7 @@ letter-spacing:.12em;text-transform:uppercase;max-width:130px}
 /* The diagram and its narration are one stacked composition: figure above,
    caption below, both centred. Giving the drawing the full column instead of
    half of it is what makes its labels legible in the first place. */
-.mr-sticky{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;
+.mr-sticky{position:sticky;top:var(--chrome);height:var(--vh);display:flex;flex-direction:column;
 align-items:center;justify-content:center;gap:clamp(18px,3.2svh,40px);
 padding:0 clamp(16px,4vw,40px);overflow:hidden}
 .mr-svg{width:100%;max-width:1180px;height:min(34svh,300px);overflow:hidden;display:block;
@@ -283,7 +290,7 @@ color:var(--step-now);font-weight:700}
    drag, lose the numbers, scroll, scroll back. The panel stays with you instead,
    and it is deliberately compact — two columns at every width, because a stacked
    pair would eat half a short screen once it is pinned. */
-.led-controls{position:sticky;top:clamp(8px,1.6vh,16px);z-index:5;
+.led-controls{position:sticky;top:calc(var(--chrome) + clamp(8px,1.6vh,16px));z-index:5;
 display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2.2vw,32px);
 background:var(--slate-900);border:1px solid rgba(255,255,255,.14);border-radius:var(--r);
 padding:clamp(12px,1.5vw,17px) clamp(14px,1.9vw,21px);
@@ -459,8 +466,8 @@ color:var(--copper-400);transition:transform .28s ease}
 .tier li::before{content:"";position:absolute;left:0;top:17px;width:9px;height:2px;background:var(--copper-400);border-radius:1px}
 
 /* ── close ── */
-#close{background:var(--slate-950);position:sticky;top:min(0px, calc(100svh - var(--sh,100svh)));overflow:hidden;text-align:center;
-min-height:100svh;display:flex;align-items:center}
+#close{background:var(--slate-950);position:sticky;top:min(var(--chrome), calc(100svh - var(--sh,100svh)));overflow:hidden;text-align:center;
+min-height:var(--vh);display:flex;align-items:center}
 #close .bg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.5}
 #close .scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(11,21,32,.58) 0%,rgba(11,21,32,.82) 55%,rgba(11,21,32,.95) 100%)}
 #close .wrap{position:relative;z-index:2}
